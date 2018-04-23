@@ -60,26 +60,11 @@ class OpenIDOAuth2Provider(OAuth2Provider):
         return {}
 
     def build_identity(self, state):
-        # https://developers.google.com/identity/protocols/OpenIDConnect#server-flow
-        # data.user => {
-        #      "iss":"accounts.google.com",
-        #      "at_hash":"HK6E_P6Dh8Y93mRNtsDB1Q",
-        #      "email_verified":"true",
-        #      "sub":"10769150350006150715113082367",
-        #      "azp":"1234987819200.apps.googleusercontent.com",
-        #      "email":"jsmith@example.com",
-        #      "aud":"1234987819200.apps.googleusercontent.com",
-        #      "iat":1353601026,
-        #      "exp":1353604926,
-        #      "hd":"example.com"
-        # }
         data = state['data']
         user_data = state['user']
-        # TODO(dcramer): we should move towards using user_data['sub'] as the
-        # primary key per the Google docs
         return {
-            'id': user_data['email'],
+            'id': user_data['sub'],
             'email': user_data['email'],
-            'name': user_data['email'],
+            'name': user_data['name'],
             'data': self.get_oauth_data(data),
         }
